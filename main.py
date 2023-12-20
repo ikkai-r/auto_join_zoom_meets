@@ -13,12 +13,6 @@ def process_meeting():
     # read the cols and rows
     col_count = 0
 
-    # lists for the zoom meetings per day
-    mon_meets = []
-    tues_meets = []
-    thurs_meets = []
-    fri_meets = []
-
     for row in range(1, df1.max_row):
         zoom_meet = ''
         zoom_time = ''
@@ -39,51 +33,19 @@ def process_meeting():
 
                 for mdays in meet_days:
                     if mdays == 'M':
-                        mon_meets.append(zoom_meet + '|' + str(zoom_time))
+                        sc.every().monday.at(zoom_time).do(open_meet, zoom_meet)
 
                     if mdays == 'T':
-                        tues_meets.append(zoom_meet + '|' + str(zoom_time))
+                        sc.every().tuesday.at(zoom_time).do(open_meet, zoom_meet)
 
                     if mdays == 'Th':
-                        thurs_meets.append(zoom_meet + '|' + str(zoom_time))
+                        sc.every().thursday.at(zoom_time).do(open_meet, zoom_meet)
 
                     if mdays == 'F':
-                        fri_meets.append(zoom_meet + '|' + str(zoom_time))
+                        sc.every().friday.at(zoom_time).do(open_meet, zoom_meet)
 
                 # reset col_count
                 col_count = 0
-
-    week_meets = [mon_meets, tues_meets, thurs_meets, fri_meets]
-    join_meets(week_meets)
-
-
-def join_meets(week_meets):
-    # process monday meets
-    for mon_meet in week_meets[0]:
-        mon_meet_str = mon_meet.split("|")
-        meet_time = mon_meet_str[1]
-        meet_link = mon_meet_str[0]
-        sc.every().monday.at(meet_time).do(open_meet, meet_link)
-
-    # process tuesday meets
-    for tues_meet in week_meets[1]:
-        tues_meet_str = tues_meet.split("|")
-        meet_time = tues_meet_str[1]
-        meet_link = tues_meet_str[0]
-        sc.every().tuesday.at(meet_time).do(open_meet, meet_link)
-
-    for thurs_meet in week_meets[2]:
-        thurs_meet_str = thurs_meet.split("|")
-        meet_time = thurs_meet_str[1]
-        meet_link = thurs_meet_str[0]
-        sc.every().thursday.at(meet_time).do(open_meet, meet_link)
-
-    for fri_meet in week_meets[3]:
-        fri_meet_str = fri_meet.split("|")
-        meet_time = fri_meet_str[1]
-        meet_link = fri_meet_str[0]
-        sc.every().friday.at(meet_time).do(open_meet, meet_link)
-
 
 def open_meet(meet_link):
     wb.open(meet_link)
